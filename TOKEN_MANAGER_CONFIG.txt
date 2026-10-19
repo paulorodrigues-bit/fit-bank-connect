@@ -1,0 +1,67 @@
+FIT BANK CONNECT - TOKEN MANAGER V1
+
+1) CASH MANAGEMENT - SANDBOX ATUAL (SEM QUEBRAR O QUE JÁ FUNCIONA)
+
+ITAU_ENV=sandbox
+ITAU_AUTH_MODE=manual
+ITAU_SANDBOX_TOKEN=<token manual do Portal>
+ITAU_CLIENT_ID=<client id>
+
+Nesse modo, emissão/consulta/baixa continuam funcionando como hoje.
+
+
+2) CASH MANAGEMENT - OAUTH AUTOMÁTICO
+
+Quando o endpoint/credenciais OAuth estiverem homologados:
+
+ITAU_ENV=sandbox
+ITAU_AUTH_MODE=oauth
+ITAU_TOKEN_URL=<url oficial do autorizador>
+ITAU_CLIENT_ID=<client id>
+ITAU_CLIENT_SECRET=<se exigido pelo contrato>
+ITAU_CERT_PATH=<caminho do certificado, se aplicável>
+ITAU_KEY_PATH=<caminho da chave privada, se aplicável>
+
+O Token Manager:
+- solicita token somente quando necessário;
+- mantém token em memória;
+- renova com margem de 30 segundos;
+- em HTTP 401 invalida o cache e tenta renovar uma vez;
+- nunca grava access_token no banco ou frontend.
+
+
+3) PRODUÇÃO CASH MANAGEMENT
+
+ITAU_ENV=production
+ITAU_AUTH_MODE=oauth
+ITAU_TOKEN_URL=<url oficial produção>
+ITAU_CLIENT_ID=<client id>
+ITAU_CLIENT_SECRET=<se exigido>
+ITAU_CERT_PATH=<certificado produção>
+ITAU_KEY_PATH=<chave privada produção>
+
+Token manual é bloqueado em produção.
+Certificado/chave são obrigatórios no modo de produção desta implementação.
+
+
+4) SISPAG
+
+Sandbox manual (se houver token manual disponível):
+ITAU_SISPAG_ENV=sandbox
+ITAU_SISPAG_AUTH_MODE=manual
+ITAU_SISPAG_SANDBOX_TOKEN=<token>
+
+OAuth/private_key_jwt atual:
+ITAU_SISPAG_ENV=sandbox
+ITAU_SISPAG_AUTH_MODE=private_key_jwt
+ITAU_SISPAG_TOKEN_URL=<url homologada>
+ITAU_SISPAG_CLIENT_ID=<client id>
+ITAU_SISPAG_PRIVATE_KEY_JWT=<assertion JWT>
+
+Produção SISPAG permanece bloqueada até confirmarmos a autenticação/homologação oficial.
+
+
+SEGURANÇA
+- Não commitar .env.
+- Não enviar tokens, client secrets, certificados ou chaves em chat/log.
+- Não expor statusSeguroTokens em rota pública.
